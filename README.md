@@ -1,4 +1,4 @@
-PHP_websocket
+php_websocket
 ==========
 
 **A php library to create a websocket as service, the program contain an example with a simple chat.**

@@ -1,16 +1,18 @@
 <?php
 
 namespace php_websocket;
-
+/**
+* @psr psr-4 namespace & autoload
+*/
 final class Autoloader {
 
-    private static $ds;
-    private static $root;
+    private static $_ds;
+    private static $_root;
 
     public static function register()
     {
-        self::$ds = DIRECTORY_SEPARATOR;
-        self::$root = dirname(__FILE__).self::$ds."..".self::$ds;
+        self::$_ds = DIRECTORY_SEPARATOR;
+        self::$_root = dirname(__FILE__).self::$_ds."..".self::$_ds;
         spl_autoload_register(array(__CLASS__, 'autoload'));
     }
 
@@ -18,6 +20,6 @@ final class Autoloader {
     {
         $parts = preg_split("#\\\#", $class);
         $className = array_pop($parts);
-        require_once self::$root.strtolower(implode(self::$ds, $parts)).self::$ds.$className.'.php';
+        require_once self::$_root.strtolower(implode(self::$_ds, $parts)).self::$_ds.$className.'.php';
     }
 }

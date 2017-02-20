@@ -16,92 +16,92 @@ abstract class WebSocketServer {
 	/**
 	* @var string $host localhost by default
 	*/
-	private $host = "localhost";
+	private $_host = "localhost";
 
 	/**
 	* @var int $port default 9001
 	*/
-	private $port = 9001;
+	private $_port = 9001;
 
 	/**
 	* @var string $domainForSocket domain of socket
 	*/
-	private $domainForSocket = "localhost";
+	private $_domainForSocket = "localhost";
 
 	/**
 	* @var ressource $socket open socket
 	*/
-	private $socket;
+	private $_socket;
 
 	/**
 	* @var array $clients list of socket
 	*/
-	private $clients = [];
+	private $_clients = [];
 
 	/**
 	* @var stdClass $inputStream input from client
 	*/
-	private $inputStream;
+	private $_inputStream;
 
 	/**
 	* @var stdClass $outputStream output send to the client
 	*/
-	private $outputStream;
+	private $_outputStream;
 
 	/**
 	* @var int $socketTimeOut time out for the socket_select (microseconds)
 	*/
-	private $socketTimeOut = 10000;
+	private $_socketTimeOut = 10000;
 
 	/**
 	* @var int $bufferOctets size of buffer in octets
 	*/
-	private $bufferOctets = 1024;
+	private $_bufferOctets = 1024;
 
 	/**
 	* @var bool $checkDomain activate the client domain checking
 	*/
-	private $checkDomain = false;
+	private $_checkDomain = false;
 
 	/**
 	* @var array $authorizedDomains list of authorized domains
 	*/
-	private $authorizedDomains = [];
+	private $_authorizedDomains = [];
 
 	/**
 	* @var array $limitUserConnection set to true to limit the number of connection
 	*/
-	private $limitUserConnection = false;
+	private $_limitUserConnection = false;
 
 	/**
 	* @var array $maxUsersConnected total of connected users
 	*/
-	private $maxUsersConnected = 100;
+	private $_maxUsersConnected = 100;
 
 	/**
 	* @var array $nbUsersConnected number of connected users
 	*/
-	private $nbUsersConnected = 0;
+	private $_nbUsersConnected = 0;
 
 	/**
 	* @var int $memoryInit The initial php memory usage in octets
 	*/
-	private $memoryInit = 0;
+	private $_memoryInit = 0;
 
 	/**
 	* @var int $memoryUsage The current program memory usage in octets
 	*/
-	private $memoryUsage = 0;
+	private $_memoryUsage = 0;
 
 	/**
 	* @var int $memoryLogLimit limit to log the overusage in kio
 	*/
-	private $memoryLogLimit = 0;
+	private $_memoryLogLimit = 0;
 
 	/**
 	* @var int $memoryMaxLimit max usage of memory in kio
 	*/
-	private $memoryMaxLimit = 0;
+	private $_memoryMaxLimit = 0;
 
 	/**
 	* @param string $host
@@ -109,24 +109,24 @@ abstract class WebSocketServer {
 	*/
 	public function __construct($host = "localhost", $port = 9001)
 	{
-		$this->memoryInit = memory_get_usage();
-		$this->host = $host;
-		$this->port = $port;
-		$this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+		$this->_memoryInit = memory_get_usage();
+		$this->_host = $host;
+		$this->_port = $port;
+		$this->_socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
 		$phpMemoryLimit = ((int) ini_get('memory_limit'))*1024*1024;
 
-		$this->memoryLogLimit = $phpMemoryLimit - 1;
-		$this->memoryMaxLimit = $phpMemoryLimit;
+		$this->_memoryLogLimit = $phpMemoryLimit - 1;
+		$this->_memoryMaxLimit = $phpMemoryLimit;
 
-		socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
+		socket_set_option($this->_socket, SOL_SOCKET, SO_REUSEADDR, 1);
 		//bind socket to specified host
-		socket_bind($this->socket, 0, $port);
+		socket_bind($this->_socket, 0, $port);
 		//listen to port
-		socket_listen($this->socket);
+		socket_listen($this->_socket);
 		//create & add listning socket to the list
-		$this->clients[] = [
+		$this->_clients[] = [
 			'token' => md5(uniqid()),
-			'client' => $this->socket
+			'client' => $this->_socket
 		];
 	}
 
@@ -138,7 +138,7 @@ abstract class WebSocketServer {
 		if(!is_int($timeOut)) {
 			throw new \Exception("The given parametter $timeOut is not an integer", 500);
 		}
-		$this->socketTimeOut = (int) $timeOut;
+		$this->_socketTimeOut = (int) $timeOut;
 		return $this;
 	}
 
@@ -150,7 +150,7 @@ abstract class WebSocketServer {
 		if(!is_int($oct)) {
 			throw new \Exception("The given parametter $oct is not an integer", 500);
 		}
-		$this->bufferOctets = (int) $oct;
+		$this->_bufferOctets = (int) $oct;
 		return $this;
 	}
 
@@ -162,8 +162,8 @@ abstract class WebSocketServer {
 		if(!is_int($max)) {
 			throw new \Exception("The given parametter $max is not an integer", 500);
 		}
-		$this->limitUserConnection = true;
-		$this->maxUsersConnected = (int) $max;
+		$this->_limitUserConnection = true;
+		$this->_maxUsersConnected = (int) $max;
 		return $this;
 	}
 
@@ -175,8 +175,8 @@ abstract class WebSocketServer {
 	*/
 	public function setAuthorizedDomains (array $domains)
 	{
-		$this->checkDomain = true;
-		$this->authorizedDomains = $domains;
+		$this->_checkDomain = true;
+		$this->_authorizedDomains = $domains;
 		return $this;
 	}
 
@@ -187,7 +187,7 @@ abstract class WebSocketServer {
 	*/
 	public function setDomainForSocket ($domain)
 	{
-		$this->domainForSocket = $domain;
+		$this->_domainForSocket = $domain;
 		return $this;
 	}
 
@@ -202,8 +202,8 @@ abstract class WebSocketServer {
 		if(!is_int($logLimit) || !is_int($maxLimit)) {
 			throw new \Exception("The given parametter $logLimit or $maxLimit is not an integer", 500);
 		}
-		$this->memoryLogLimit = $logLimit;
-		$this->memoryMaxLimit = $maxLimit;
+		$this->_memoryLogLimit = $logLimit;
+		$this->_memoryMaxLimit = $maxLimit;
 		return $this;
 	}
 
@@ -226,7 +226,7 @@ abstract class WebSocketServer {
 	*/
 	public function getInputStream()
 	{
-		return $this->inputStream;
+		return $this->_inputStream;
 	}
 
 	/**
@@ -234,7 +234,7 @@ abstract class WebSocketServer {
 	*/
 	public function getnbUsersConnected()
 	{
-		return $this->nbUsersConnected;
+		return $this->_nbUsersConnected;
 	}
 
 	/**
@@ -242,7 +242,7 @@ abstract class WebSocketServer {
 	*/
 	public function getClients ()
 	{
-		return $this->clients;
+		return $this->_clients;
 	}
 
 	/**
@@ -250,7 +250,7 @@ abstract class WebSocketServer {
 	*/
 	public function setOutputStream (array $output)
 	{
-		$this->outputStream = $output;
+		$this->_outputStream = $output;
 		return $this;
 	}
 
@@ -260,7 +260,7 @@ abstract class WebSocketServer {
 	*/
 	public function pushToClient(array $clients)
 	{
-		$responseText = $this->_mask(json_encode($this->outputStream));
+		$responseText = $this->_mask(json_encode($this->_outputStream));
 		$arrLen = count($clients);
 		for($i = 0; $i < $arrLen; $i++) {
 			$this->_sendMessage($responseText, $clients[$i]['client']); //send data
@@ -320,26 +320,26 @@ abstract class WebSocketServer {
 		while (true) {
 
 			//action for memory issue
-			$this->memoryUsage = memory_get_usage() - $this->memoryInit;
+			$this->_memoryUsage = memory_get_usage() - $this->_memoryInit;
 
 			if(
-				$this->memoryUsage > $this->memoryLogLimit*1024
-				&& $this->memoryUsage < $this->memoryMaxLimit*1024
+				$this->_memoryUsage > $this->_memoryLogLimit*1024
+				&& $this->_memoryUsage < $this->_memoryMaxLimit*1024
 			) {
 				$this->_echo(
 					"\033[33m"
-					.($this->memoryUsage/1024)
-					." ko used, ".$this->memoryLogLimit
+					.($this->_memoryUsage/1024)
+					." ko used, ".$this->_memoryLogLimit
 					." defined for yellow zone. "
-					.$this->memoryLogLimit." defined for red zone"
+					.$this->_memoryLogLimit." defined for red zone"
 					."\033[0m",
 					"ALERT"
 				);
-			} else if($this->memoryUsage >= $this->memoryMaxLimit*1024) {
+			} else if($this->_memoryUsage >= $this->_memoryMaxLimit*1024) {
 				$this->_echo(
 					"\033[31m"
-					.($this->memoryUsage/1024)
-					." ko used, ".$this->memoryMaxLimit
+					.($this->_memoryUsage/1024)
+					." ko used, ".$this->_memoryMaxLimit
 					." defined for red zone"
 					."\033[0m",
 					"ERROR"
@@ -349,33 +349,33 @@ abstract class WebSocketServer {
 			}
 
 			//manage multipal connections
-			$changed = array_column($this->clients, 'client');
+			$changed = array_column($this->_clients, 'client');
 			//returns the socket resources in $changed array
 			$null = NULL;
-			socket_select($changed, $null, $null, 0, $this->socketTimeOut);
+			socket_select($changed, $null, $null, 0, $this->_socketTimeOut);
 
 			//check for new socket
-			if (in_array($this->socket, $changed)) {
-				$socketNew = socket_accept($this->socket); //accpet new socket
+			if (in_array($this->_socket, $changed)) {
+				$socketNew = socket_accept($this->_socket); //accpet new socket
 
 				$newClient = [
 					'token' => md5(uniqid()),
 					'client' => $socketNew
 				];
-				$this->clients[] = $newClient; //add socket to client array
+				$this->_clients[] = $newClient; //add socket to client array
 
-				$header = socket_read($socketNew, $this->bufferOctets); //read data sent by the socket
+				$header = socket_read($socketNew, $this->_bufferOctets); //read data sent by the socket
 
-				if($this->checkDomain && !$this->_checkDomain($header)) {
+				if($this->_checkDomain && !$this->_checkDomain($header)) {
 					 continue;
 				}
 
 				$this->_performHandshaking($header, $socketNew); //perform websocket handshake
 
-				$this->nbUsersConnected++;
+				$this->_nbUsersConnected++;
 				if(
-					$this->nbUsersConnected > $this->maxUsersConnected
-					&& $this->limitUserConnection
+					$this->_nbUsersConnected > $this->_maxUsersConnected
+					&& $this->_limitUserConnection
 				) {
 					$msg = "Number of connected users is over limit";
 					$response = $this->_mask(json_encode(
@@ -388,14 +388,14 @@ abstract class WebSocketServer {
 
 				socket_getpeername($socketNew, $ip); //get ip address of connected socket
 
-				$this->_echo("\033[32m New connection from $ip, ".$this->nbUsersConnected." connected.\033[0m");
+				$this->_echo("\033[32m New connection from $ip, ".$this->_nbUsersConnected." connected.\033[0m");
 
 				$this->onConnect(
 					(object) ['socket' => [$newClient], 'ip' => $ip]
 				);
 
 				//make room for new socket
-				$foundSocket = array_search($this->socket, $changed);
+				$foundSocket = array_search($this->_socket, $changed);
 				unset($changed[$foundSocket]);
 			}
 
@@ -403,12 +403,12 @@ abstract class WebSocketServer {
 			foreach ($changed as $changedSocket) {
 
 				//check for any incomming data
-				while(socket_recv($changedSocket, $buff, $this->bufferOctets, 0) >= 1)
+				while(socket_recv($changedSocket, $buff, $this->_bufferOctets, 0) >= 1)
 				{
 					$receivedText = $this->_unmask($buff); //unmask data
-					$this->inputStream = json_decode($receivedText); //json decode
+					$this->_inputStream = json_decode($receivedText); //json decode
 					//For the other event without message
-					if(!empty($this->inputStream)) {
+					if(!empty($this->_inputStream)) {
 						if(!$this->authSecurization("")) {
 							continue;
 						}
@@ -419,20 +419,20 @@ abstract class WebSocketServer {
 					break 2;
 				}
 
-				$buf = socket_read($changedSocket, $this->bufferOctets, PHP_NORMAL_READ);
+				$buf = socket_read($changedSocket, $this->_bufferOctets, PHP_NORMAL_READ);
 				if ($buf === false) { // check disconnected client
 					// remove client for $clients array
-					$foundSocket = array_search($changedSocket, array_column($this->clients, 'client'));
+					$foundSocket = array_search($changedSocket, array_column($this->_clients, 'client'));
 					socket_getpeername($changedSocket, $ip);
 
 					//decrease the connection cunter
-					$this->nbUsersConnected--;
-					$this->_echo("\033[32m Remove connection from $ip, ".$this->nbUsersConnected." connected.\033[0m");
+					$this->_nbUsersConnected--;
+					$this->_echo("\033[32m Remove connection from $ip, ".$this->_nbUsersConnected." connected.\033[0m");
 					//Use the onDisconnect function
 					$this->onDisconnect(
-						(object) ['socket' => [$this->clients[$foundSocket]], 'ip' => $ip]
+						(object) ['socket' => [$this->_clients[$foundSocket]], 'ip' => $ip]
 					);
-					unset($this->clients[$foundSocket]);
+					unset($this->_clients[$foundSocket]);
 
 				}
 
@@ -450,7 +450,7 @@ abstract class WebSocketServer {
 	{
 		//var_dump($changedSocket);
 		if(empty($changedSocket)) {
-			foreach($this->clients as $changedSocket)
+			foreach($this->_clients as $changedSocket)
 			{
 				if(!socket_write($changedSocket,$msg,strlen($msg))) {
 					$error = socket_last_error();
@@ -487,7 +487,7 @@ abstract class WebSocketServer {
 				$domain = trim($a[1]);
 			}
 		}
-		if(!in_array($domain, $this->authorizedDomains)) {
+		if(!in_array($domain, $this->_authorizedDomains)) {
 			$this->_log($domain." Request from wrong domain", true);
 			return false;
 		}
@@ -557,8 +557,8 @@ abstract class WebSocketServer {
 				$headers[$matches[1]] = $matches[2];
 			}
 		}
-		$host = $this->domainForSocket;
-		$port = $this->port;
+		$host = $this->_domainForSocket;
+		$port = $this->_port;
 		$secKey = $headers['Sec-WebSocket-Key'];
 		$secAccept = base64_encode(pack('H*', sha1($secKey . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')));
 		//hand shaking header

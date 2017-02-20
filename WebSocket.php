@@ -1,7 +1,7 @@
 <?php
 namespace php_websocket;
 
-use PHP_websocket\models\ModelExample;
+use php_websocket\models\ModelExample;
 
 /**
 * @package PHP_websocket

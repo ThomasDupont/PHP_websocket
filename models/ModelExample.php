@@ -8,8 +8,8 @@ namespace php_websocket\models;
 */
 final class ModelExample implements ModelInterface {
 
-    private $name;
-    private $socket;
+    private $_name;
+    private $_socket;
 
     /**
     * @param WebSocket $webSocket, instance of WebSocket class
@@ -19,16 +19,16 @@ final class ModelExample implements ModelInterface {
     */
     public function addInstance(php_websocket\WebSocket $webSocket)
     {
-        $this->socket = $webSocket;
+        $this->_socket = $webSocket;
     }
 
     public function __construct ()
     {
-        $this->name = "toto";
+        $this->_name = "toto";
     }
 
     public function getName()
     {
-        return $this->name;
+        return $this->_name;
     }
 }
