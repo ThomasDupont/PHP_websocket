@@ -1,6 +1,6 @@
 <?php
 
-namespace PHP_websocket;
+namespace php_websocket;
 
 final class Autoloader {
 

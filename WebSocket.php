@@ -1,5 +1,5 @@
 <?php
-namespace PHP_websocket;
+namespace php_websocket;
 
 use PHP_websocket\models\ModelExample;
 

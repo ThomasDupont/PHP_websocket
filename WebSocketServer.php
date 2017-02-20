@@ -1,6 +1,6 @@
 <?php
 
-namespace PHP_websocket;
+namespace php_websocket;
 /***********************************************************************************************
  * PHP WebSocket library
  * Copyright 2017 Thomas DUPONT, Vi Veri veniversum vivus vici

@@ -1,6 +1,6 @@
 <?php
 
-namespace PHP_websocket\models;
+namespace php_websocket\models;
 
 use PHP_websocket\WebSocket;
 /**
