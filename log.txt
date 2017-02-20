@@ -1,1 +1,0 @@
-Error in socket writting 32, code Broken pipe
