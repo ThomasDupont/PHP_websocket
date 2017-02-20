@@ -1,0 +1,3 @@
+Error in socket writting 57, code Socket is not connected
+Error in socket writting 57, code Socket is not connected
+Error in socket writting 57, code Socket is not connected

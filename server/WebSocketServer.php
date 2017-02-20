@@ -354,6 +354,7 @@ abstract class WebSocketServer {
 			$null = NULL;
 			socket_select($changed, $null, $null, 0, $this->_socketTimeOut);
 
+			unset($null);
 			//check for new socket
 			if (in_array($this->_socket, $changed)) {
 				$socketNew = socket_accept($this->_socket); //accpet new socket
@@ -397,6 +398,7 @@ abstract class WebSocketServer {
 				//make room for new socket
 				$foundSocket = array_search($this->_socket, $changed);
 				unset($changed[$foundSocket]);
+				unset($socketNew);
 			}
 
 			//loop through all connected sockets
@@ -419,6 +421,8 @@ abstract class WebSocketServer {
 					break 2;
 				}
 
+				unset($buff);
+
 				$buf = socket_read($changedSocket, $this->_bufferOctets, PHP_NORMAL_READ);
 				if ($buf === false) { // check disconnected client
 					// remove client for $clients array
@@ -436,7 +440,10 @@ abstract class WebSocketServer {
 
 				}
 
+				unset($buf);
+
 			}
+			unset($changed);
 		}
 	}
 
