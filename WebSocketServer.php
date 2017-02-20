@@ -580,7 +580,7 @@ abstract class WebSocketServer {
 	{
 		if(DEBUG) {
 			$this->_echo($msg);
-			file_put_contents( __DIR__."/log.txt", $msg."\n", FILE_APPEND);
+			file_put_contents(LOGPATH, $msg."\n", FILE_APPEND);
 		} else if ($echo) {
 			$this->_echo($msg);
 		}

@@ -2,7 +2,8 @@
 
 namespace php_websocket;
 
-define("DEBUG", true);
+define("DEBUG", false);
+define("LOGPATH", __DIR__."/log.txt");
 
 ini_set('display_errors', DEBUG);
 error_reporting(-DEBUG);
@@ -10,7 +11,7 @@ error_reporting(-DEBUG);
 require_once "Autoloader.php";
 Autoloader::register();
 
-$socket = new WebSocket("0.0.0.0", 9001);
+$socket = new WebSocket("192.168.222.53", 9001);
 $socket->setMaxUsersConnected(2)
        ->setbufferOctets(1024) //the max size of buffer.
        ->setSocketTimeOut(10000)// in microseconds, depend the CPU capacity and your usage
