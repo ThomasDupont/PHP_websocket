@@ -4,7 +4,7 @@ PHP_websocket
 **A php library to create a websocket as service, the program contain an example with a simple chat.**
 
 ## Documentation
-- Developer Docs: [https://github.com/ThomasDupont/PHP_websocket/wiki](https://github.com/ThomasDupont/PHP_websocket/wiki)
+- Developer Docs: [https://github.com/ThomasDupont/php_websocket/wiki](https://github.com/ThomasDupont/php_websocket/wiki)
 
 ## Current Release
 - <b>0.1.0</b> : first stable and documented version.
@@ -31,7 +31,7 @@ The example with the chat is full documented in the launch.php.
 This library has been made by me for a test on a notification service on our application.
 
 ## Bugs
-If you find a bug, please post it as a new issue on the GitHub repository with <a https://github.com/ThomasDupont/PHP_websocket/issues">this information in your report</a>.
+If you find a bug, please post it as a new issue on the GitHub repository with <a https://github.com/ThomasDupont/php_websocket/issues">this information in your report</a>.
 
 ## Contribute
 If you would like to contribute to the project, have at it.  <a href="https://help.github.com/articles/fork-a-repo">Fork the Tweetledee project</a>, include your changes, and <a href="https://help.github.com/articles/using-pull-requests">submit a pull request</a> back to the main repository.
