@@ -402,7 +402,10 @@ abstract class WebSocketServer {
 			}
 
 			//loop through all connected sockets
-			foreach ($changed as $changedSocket) {
+			$len = count($changed);
+			for($i =0; $i<$len;$i++)
+			{
+				$changedSocket = $changed[$i];
 
 				//check for any incomming data
 				while(socket_recv($changedSocket, $buff, $this->_bufferOctets, 0) >= 1)
@@ -456,9 +459,12 @@ abstract class WebSocketServer {
 	private function _sendMessage($msg, $changedSocket = "")
 	{
 		//var_dump($changedSocket);
-		if(empty($changedSocket)) {
-			foreach($this->_clients as $changedSocket)
+		if(empty($changedSocket)){
+			$len = count($this->_clients);
+			for($i =0; $i<$len;$i++)
 			{
+				$changedSocket = $this->_clients[$i];
+
 				if(!socket_write($changedSocket,$msg,strlen($msg))) {
 					$error = socket_last_error();
 					$errorCode = socket_strerror($error);
