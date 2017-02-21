@@ -452,8 +452,10 @@ abstract class WebSocketServer {
 	{
 		//var_dump($changedSocket);
 		if(empty($changedSocket)) {
-			foreach($this->clients as $changedSocket)
+			$len = count($this->clients);
+			for($i=0;$i<$len;$i++)
 			{
+				$changedSocket = $this->clients[$i];
 				if(!socket_write($changedSocket,$msg,strlen($msg))) {
 					$error = socket_last_error();
 					$errorCode = socket_strerror($error);
