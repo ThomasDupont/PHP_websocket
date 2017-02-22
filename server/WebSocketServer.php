@@ -403,7 +403,7 @@ abstract class WebSocketServer {
 
 			//loop through all connected sockets
 			$len = count($changed);
-			for($i =0; $i<$len;$i++)
+			for($i =1; $i<=$len;$i++)
 			{
 				$changedSocket = $changed[$i];
 
